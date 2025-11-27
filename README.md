@@ -93,7 +93,6 @@ Bu sınıf, tüm HTTP isteklerini işlemek için http.server.BaseHTTPRequestHand
 2.3. _serve_logs(self)/logs adresine erişildiğinde çalışır.HTTP 200 OK yanıtı döndürür.logs listesindeki tüm kayıtları alarak, basit bir HTML <pre> etiketi içinde formatlar ve istemciye gönderir.
 
 
-
 ⚠️ Dikkat Edilmesi Gerekenler
 
 Bu proje, bir eğitim aracı ve temel bir uygulama olarak tasarlanmıştır. Üretim ortamında kullanılması için daha fazla güvenlik, hata kontrolü, performans optimizasyonu (önbellekleme gibi) ve eşzamanlılık (threading/asyncio) yönetimi gereklidir.
