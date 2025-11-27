@@ -98,6 +98,10 @@ Bu sınıf, tüm HTTP isteklerini işlemek için http.server.BaseHTTPRequestHand
 
 Bu proje, bir eğitim aracı ve temel bir uygulama olarak tasarlanmıştır. Üretim ortamında kullanılması için daha fazla güvenlik, hata kontrolü, performans optimizasyonu (önbellekleme gibi) ve eşzamanlılık (threading/asyncio) yönetimi gereklidir.
 
+
+
+
+
  # proxy.py
 import http.server
 import socketserver
@@ -182,3 +186,49 @@ def run():
         httpd.serve_forever()
 if __name__ == "__main__":
     run()              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
