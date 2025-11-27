@@ -58,13 +58,9 @@ URLGET isteğihttp://localhost:8080/https://www.google.com
 
 Logları Görüntülemehttp://localhost:8080/logs
 
-
-
 💻 Kod Analizi: proxy.py
 
 Projenin kalbi olan proxy.py dosyasındaki temel sınıflar ve metotlar aşağıda detaylandırılmıştır.
-
-
 
 1. Global Değişkenler ve Yardımcı Fonksiyonlar
 
@@ -75,23 +71,16 @@ logs = []: Tüm log kayıtlarının string olarak tutulduğu global liste.
 add_log(text): Log kaydını hem konsola yazdıran hem de logs listesine ekleyen fonksiyondur.
 
 
-
 3. ProxyHandler Sınıfı
-
 Bu sınıf, tüm HTTP isteklerini işlemek için http.server.BaseHTTPRequestHandler sınıfından türetilmiştir.
-
-
 
 2.1. log_message(self, format, *args)Bu metot, BaseHTTPRequestHandler'ın varsayılan loglama işlevini override eder. Gelen tüm erişim loglarını formatlayarak add_log fonksiyonu aracılığıyla hem konsola hem de logs listesine kaydeder.
 
-   
+2.2. do_GET(self) ve do_POST(self)Gelen GET ve POST isteklerini işleyen ana giriş noktalarıdır.
+İstek yolu /logs ise, logları gösteren _serve_logs() metodu çağrılır.Diğer tüm istekler, proxy mantığının bulunduğu _handle_proxy() metoduna yönlendirilir.
 
-2.2. do_GET(self) ve do_POST(self)Gelen GET ve POST isteklerini işleyen ana giriş noktalarıdır.İstek yolu /logs ise, logları gösteren _serve_logs() metodu çağrılır.Diğer tüm istekler, proxy mantığının bulunduğu _handle_proxy() metoduna yönlendirilir.
-
-
-
-2.3. _serve_logs(self)/logs adresine erişildiğinde çalışır.HTTP 200 OK yanıtı döndürür.logs listesindeki tüm kayıtları alarak, basit bir HTML <pre> etiketi içinde formatlar ve istemciye gönderir.
-
+2.3. _serve_logs(self)/logs adresine erişildiğinde çalışır.
+HTTP 200 OK yanıtı döndürür.logs listesindeki tüm kayıtları alarak, basit bir HTML <pre> etiketi içinde formatlar ve istemciye gönderir.
 
 ⚠️ Dikkat Edilmesi Gerekenler
 
