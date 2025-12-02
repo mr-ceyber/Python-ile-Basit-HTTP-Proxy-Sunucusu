@@ -1,4 +1,4 @@
-## 🔍 Temel Öğrenim Noktaları (Vurgulayıcı Bilgiler)
+## 🔍 Temel Öğrenim Noktaları 
 
 ### 1. Eğitsel Amaç ve Güvenlik ⚠️
 
