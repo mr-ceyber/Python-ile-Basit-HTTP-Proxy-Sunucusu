@@ -1,104 +1,32 @@
-🌐 Python ile Basit HTTP Proxy Sunucusu
+## 🔍 Temel Öğrenim Noktaları (Vurgulayıcı Bilgiler)
 
+### 1. Eğitsel Amaç ve Güvenlik ⚠️
 
+* Bu proje, bir **eğitim aracı** olarak tasarlanmıştır. Gerçek bir **üretim ortamında (production)** veya hassas verilerin geçtiği yerlerde **kesinlikle kullanılmamalıdır.**
+* Üretim seviyesinde bir proxy sunucusu için **eşzamanlılık (concurrency)**, önbellekleme (caching) ve gelişmiş güvenlik mekanizmalarına ihtiyaç vardır.
 
-📝 Proje Özeti
+---
 
-Bu proje, Python'ın yerleşik HTTP sunucu modülleri (http.server, socketserver) ve popüler requests kütüphanesi kullanılarak geliştirilmiş, minimal ve eğitim odaklı bir HTTP/HTTPS Vekil Sunucu (Proxy) uygulamasıdır. Amacı, istemciden gelen istekleri alıp belirli bir hedef URL'ye iletmek, yanıtı almak ve istemciye geri göndermek suretiyle temel bir proxy mekanizmasının nasıl çalıştığını göstermektir.
+### 2. Vekil Sunucu (Proxy) Mantığı
 
+* **Çift Yönlü İletişim:** Proxy, **istemci** (tarayıcınız) ile **hedef sunucu** arasındaki bir aracıdır. İstemciden isteği alır, hedefe iletir, hedeften yanıtı alır ve istemciye geri iletir.
+* **Ayrı Bağlantılar:** İstemci, proxy sunucusu ile ayrı bir bağlantı kurar. Proxy sunucusu ise hedefe ayrı bir bağlantı kurar. **İki bağlantı birbirinden bağımsızdır.**
 
+---
 
-✨ Temel Özellikler
+### 3. Koddaki Kritik Noktalar
 
-URL Tabanlı Yönlendirme:İstemciler, hedef URL'yi doğrudan proxy adresinin yol (path) kısmında belirtir (Örn: http://localhost:8080/https://example.com).
+#### A. Başlık (Header) Filtreleme
+* En kritik adım, **`HEADERS_TO_FILTER`** listesidir. Proxy işlemi sırasında **`Host`**, **`Connection`**, **`Transfer-Encoding`** gibi başlıkların temizlenmesi veya güncellenmesi gerekir.
+* Bu başlıklar, istemci ile proxy arasındaki bağlantıya özeldir ve hedefe olduğu gibi gönderilirse **ağ hatalarına** veya **yanlış yönlendirmelere** neden olur.
 
-Çoklu Metot Desteği: GET ve POST HTTP metotlarını destekler.Başlık (Header) 
+#### B. URL Yönlendirme
+* Bu projedeki basit proxy'de, hedef URL'yi istemcinin isteğinin **yol (path)** kısmında belirtmesi (`http://localhost:8080/https://google.com`) eğitici bir yaklaşımdır.
+* Geleneksel proxy'lerde ise istemci, doğrudan hedef URL'yi gönderir ve proxy sunucusu bir konfigürasyon dosyasına ihtiyaç duymaz.
 
-Filtreleme: Proxy sunucusu ve bağlantı katmanı için gereksiz olan başlıkları (örn: Host, Connection) otomatik olarak temizler.
-
-Özel Loglama: Tüm gelen istekleri, hedef URL'yi ve sonuç durum kodunu (status code) kaydeden yerleşik bir loglama mekanizması içerir.
-
-Log Görüntüleme Arayüzü: /logs adresine yapılan isteklerle toplanan loglar HTML formatında görüntülenebilir.
-
-Hata Yönetimi: Ağ bağlantısı sorunları (502 Bad Gateway) ve iç sunucu hataları (500 Internal Error) için temel hata yakalama mekanizmasına sahiptir.
-
-
-
-🛠️ Kurulum ve Çalıştırma
-
-Gereksinimler
-
-Bu projeyi çalıştırmak için yalnızca Python 3 ve requests kütüphanesine ihtiyacınız vardır.
-
-Bash# Gerekli kütüphaneyi kurun
-
-pip install requests
-
-
-
-Çalıştırma
-
-Projeyi başlatmak için terminalde aşağıdaki komutu çalıştırın:
-
-Bash
-
-python proxy.py
-
-Sunucu varsayılan olarak http://localhost:8080 adresinde başlayacaktır.
-
-🚀 Proxy başlatıldı: http://localhost:8080
-
-Kullanım Örnekleri
-
-
-
-Amaç
-
-URLGET isteğihttp://localhost:8080/https://www.google.com
-
-Logları Görüntülemehttp://localhost:8080/logs
-
-💻 Kod Analizi: proxy.py
-
-Projenin kalbi olan proxy.py dosyasındaki temel sınıflar ve metotlar aşağıda detaylandırılmıştır.
-
-1. Global Değişkenler ve Yardımcı Fonksiyonlar
-
-PORT = 8080: Proxy'nin dinleyeceği TCP portudur.
-
-logs = []: Tüm log kayıtlarının string olarak tutulduğu global liste.
-
-add_log(text): Log kaydını hem konsola yazdıran hem de logs listesine ekleyen fonksiyondur.
-
-
-3. ProxyHandler Sınıfı
-Bu sınıf, tüm HTTP isteklerini işlemek için http.server.BaseHTTPRequestHandler sınıfından türetilmiştir.
-
-2.1. log_message(self, format, *args)Bu metot, BaseHTTPRequestHandler'ın varsayılan loglama işlevini override eder. Gelen tüm erişim loglarını formatlayarak add_log fonksiyonu aracılığıyla hem konsola hem de logs listesine kaydeder.
-
-2.2. do_GET(self) ve do_POST(self)Gelen GET ve POST isteklerini işleyen ana giriş noktalarıdır.
-İstek yolu /logs ise, logları gösteren _serve_logs() metodu çağrılır.Diğer tüm istekler, proxy mantığının bulunduğu _handle_proxy() metoduna yönlendirilir.
-
-2.3. _serve_logs(self)/logs adresine erişildiğinde çalışır.
-HTTP 200 OK yanıtı döndürür.logs listesindeki tüm kayıtları alarak, basit bir HTML <pre> etiketi içinde formatlar ve istemciye gönderir.
-
-⚠️ Dikkat Edilmesi Gerekenler
-
-Bu proje, bir eğitim aracı ve temel bir uygulama olarak tasarlanmıştır. Üretim ortamında kullanılması için daha fazla güvenlik, hata kontrolü, performans optimizasyonu (önbellekleme gibi) ve eşzamanlılık (threading/asyncio) yönetimi gereklidir.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#### C. Hata Yönetimi
+* **502 Bad Gateway:** Proxy'nin hedef sunucuya **bağlanamadığı** (ağ hatası) durumlarda döndürdüğü en yaygın koddur.
+* **500 Internal Error:** Proxy sunucusunun **kendi kodunda** bir mantık hatasıyla karşılaştığı durumlarda döndürdüğü genel hatadır.
 
 
 
